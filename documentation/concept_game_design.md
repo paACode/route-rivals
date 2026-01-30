@@ -1,64 +1,89 @@
-## Core Game  Dynamics
+# RouteRivals - Game Concept
 
-### 🎯 Territory Control
-Teams compete to capture and defend geographic checkpoints scattered across a predefined battle-map. Hold strategic positions longer than your opponents to accumulate points. 
-
-### ⚔️ Elimination Mechanic
-When you overtake an opponent, they're eliminated from play and must respawn at their team's base station 
-
-### 🤝 Team Tactics 
-Victory requires more than just raw speed and performance - coordination and strategy are essential. 
-
-Analyse the routes of the choosen battle map with your team before the race day:
-- How can Checkpoints be reached? Are there many main roads , single trails or gravel paths?
-- Plan your routes 
-- Anticipate what your oponents strategy could be? Where could they place road blocks
-- Divide tactical roles in your team: 
- "attacker": Overtake oponents to bring them home to their base station
- "conqueror": Collect those checkpoints
- "scout": trying to stay camouflaged and understand whats the oponents strategy
- "buff collector": Collect those buffs to get your team a tactical advantage
-- Choose your bikes: MTB can be great to attack checkpoints from hard to control single trails. Road Bikes are great to hunt your oponents down and to fastly reach checkpoints.
-Gravel bikes can be a great compromise having both from both worlds. 
-
-### ✨ Apply Skills 
-Use tactical abilities by using your teams sweat drops to disrupt your opponents strategy.
-
-- Use roadblocks to enforce your oponents,searching alternative routes reaching the checkpoint under your Control
-- Use traps that will flatten your opponents tubes, enforcing them to take a break for 1min 
-- Use Ghost-Rider Attacks to make your oponnent belief they are chased to drain their energy , before you start a real attack . 
-- Use exploration towers to track your oponents activities
-- Place a temporary revive station in a tactical ideal place , so that your team mates do not need to go back all the way back to the base station in case they were hunted down by an oponent.
-
-### 💦 Earnig Sweat Drops 
-
-The more distance your team travels the more sweat drops your team earns. Keep moving to enable your team to apply amazing tactical skills.
-
-## Bonus Objective
-
-BEsides the core game dynamics there are additional game dynamics that can decide a game . Do not underestimate the potential of this additional buffs . 
-
-
-### 💛 Cycling Passion (Biggest Distance and Elevanting)
-Your team drove the biggest distance and elevation. If time is up, your team gets a bonus of 100 points. This can turn around a game in the late game. So keep those wheels moving all the time
-
-### 👕 Green Jersey (Sprint Segments)
-There are designated speed zones scattered across the map. Can your team hold overall the fastest times in all available segments? If yes the team will get the Green Jersey leading to a buff that reduces the capture time of a checkpoint.
-Note: It's always valuable to have a good sprinter in the team. 
-
-### ⛰️ King of the Hill (Climb Segments)
-
-Designated climbin zone on key ascent. Post the fastes time as team to get the "King of the Hill" Buff. This buff provides " Sweat Drops" earning for the whole team. 
-
-### ️🗺 Exploration Waypoints
-Discover hidden scenic viewpoints and landmarks to earn bonus points. Despite this are only little points earned, sometimes the scenic route is the winning route. 
-Don't underestimate the power of collecting often little points.
+RouteRivals transforms outdoor cycling into a real-time multiplayer strategy game. Teams compete on real roads using GPS-based gameplay that rewards tactical thinking and coordination - not just raw power.
 
 ---
-  Game Philosophy: Core modes determine victory, but bonus objectives create strategic depth. Do you chase every sprint and climb, or focus on territory control? Balance is key.
 
+## 🎮 Core Gameplay
 
-## Key Features
+### 🎯 Territory Control
+Teams compete to capture and hold geographic checkpoints (flags) scattered across a real-world battle map. Capture a flag by staying within its radius for 45 seconds. Owned flags generate points over time.
+A game ends when max points are achieved or when time is up.
 
-- **Real-Time Competition**: Live player tracking, capture progress, and dynamic scoring
-- **Strategic Gameplay**: Position yourself tactically, coordinate with teammates, time your attacks
+**Strategic choices:**
+- Which flags are worth fighting for based on terrain and routes?
+- Should your team spread or keep together? (Drafting, Faster capture time,...)
+
+### ⚔️ Elimination Mechanic
+Overtake an opponent and they're temporarily eliminated - forced to respawn at their team's territory. This creates numerical advantages and adds high-stakes drama to every encounter.
+
+**Elimination rules:**
+- Safety first: Elimination in descents is not possible
+- Approaching an opponent starts an attack alert on both screens (attacker and defender)
+  - 30m gap triggers alert on flats
+  - 10m gap triggers alert on climbs
+- Overtake and maintain clean separation (30m on flats, 10m on climbs) for 30 seconds to eliminate
+
+### 🤝 Team Tactics
+Victory requires strategy and teamwork, not just fitness.
+
+**Pre-game planning:**
+- Analyze terrain: main roads, single track, gravel paths
+- Identify strategic flag positions
+- Anticipate opponent strategies
+- Assign tactical roles
+
+**Tactical roles:**
+- **Attacker:** Hunt opponents for eliminations
+- **Conqueror:** Focus on capturing and holding flags
+- **Scout:** Gather intelligence while staying hidden
+- **Sprinter/Climber:** Claim segments for bonus points and buffs
+
+**🚴 Bike selection matters:**
+- MTB: Access hard-to-reach flags via single track
+- Road bike: Speed for eliminations and rapid transitions
+- Gravel bike: Versatility for mixed terrain
+
+---
+
+## 💦 Resource System: Sweat Drops
+
+Distance traveled earns sweat drops. Spend them on tactical abilities:
+
+- **🚧 Roadblock:** Force opponents to find alternate routes
+- **🗼 Exploration Tower:** Reveal opponent positions on the map
+- **🏥 Temporary Revive Station:** Place a closer respawn point for teammates
+
+This rewards constant movement and creates meaningful strategic choices.
+
+---
+
+## 🏆 Bonus Objectives
+
+Secondary objectives create multiple paths to victory:
+
+| Objective | How to Win | Reward |
+|-----------|------------|--------|
+| **👕 Green Jersey** | Fastest times through sprint segments | Checkpoint capture time buff |
+| **⛰️ King of the Mountain** | Fastest climbing times | Bonus sweat drop generation |
+| **🗺️ Exploration Waypoints** | Discover hidden locations | Bonus points |
+| **💛 Cycling Passion** | Most total distance/elevation | 100 point end-game bonus |
+
+---
+
+## 🎲 Design Philosophy
+
+- Territory control determines victory (~70% of points)
+- Bonus objectives create strategic depth (~30% of points)
+- Multiple viable strategies based on team composition
+- Tactics and teamwork can overcome pure power differences
+- Every rider type can contribute meaningfully
+
+---
+
+## ✨ Key Features
+
+- **Real-Time Competition:** Live GPS tracking with opponents on the map (visible on own territory or within exploration towers view radius)
+- **Strategic Depth:** Positioning, coordination, and timing matter
+- **Safety-First:** Traffic laws always supersede game rules, audio feedback minimizes screen time, attacks trigger automatically when reaching an opponent. Skills can only be applied when stationary.
+
