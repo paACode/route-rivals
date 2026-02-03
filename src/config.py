@@ -10,5 +10,5 @@ MAP_BOUNDS = {
 MAP_SIZE_PIXELS = (1925, 1248)  # of your PNG
 
 # Player settings
-PLAYER_SPEED_MPS = 14  # meters per second ≈ 50 km/h
+PLAYER_SPEED_MPS = 139  # meters per second ≈ 1000 km/h
 PLAYER_COLOR = (0, 100, 255)  # Blue

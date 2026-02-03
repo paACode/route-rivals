@@ -22,7 +22,7 @@ class Renderer:
         self.map_image = pygame.image.load(MAP_IMAGE_PATH).convert()
 
         # Player settings
-        self.player_radius = 10
+        self.player_radius = 8
 
         # Font for debug info
         self.font = pygame.font.Font(None, 24)
