@@ -28,18 +28,31 @@ def main() -> None:
 
         # Get pressed keys for continuous movement
         keys = pygame.key.get_pressed()
-        directions = []
+
+        # Player 1: Arrow keys
+        p1_directions = []
         if keys[pygame.K_UP]:
-            directions.append("north")
+            p1_directions.append("north")
         if keys[pygame.K_DOWN]:
-            directions.append("south")
+            p1_directions.append("south")
         if keys[pygame.K_LEFT]:
-            directions.append("west")
+            p1_directions.append("west")
         if keys[pygame.K_RIGHT]:
-            directions.append("east")
+            p1_directions.append("east")
+
+        # Player 2: WASD
+        p2_directions = []
+        if keys[pygame.K_w]:
+            p2_directions.append("north")
+        if keys[pygame.K_s]:
+            p2_directions.append("south")
+        if keys[pygame.K_a]:
+            p2_directions.append("west")
+        if keys[pygame.K_d]:
+            p2_directions.append("east")
 
         # Update game state
-        game_state.update(dt, directions)
+        game_state.update(dt, p1_directions, p2_directions)
 
         # Render
         renderer.draw(game_state)

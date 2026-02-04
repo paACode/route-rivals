@@ -8,9 +8,11 @@ import math
 from src.config import (
     MAP_IMAGE_PATH,
     MAP_SIZE_PIXELS,
-    PLAYER_COLOR,
+    PLAYER_1_COLOR,
+    PLAYER_2_COLOR,
     FLAG_COLOR_NEUTRAL,
     FLAG_COLOR_PLAYER_1,
+    FLAG_COLOR_PLAYER_2,
     FLAG_CAPTURE_RADIUS_METERS,
 )
 from src.geo_utils import latlng_to_pixel
@@ -52,8 +54,10 @@ class Renderer:
                 color = FLAG_COLOR_NEUTRAL
             elif flag.owner == 1:
                 color = FLAG_COLOR_PLAYER_1
+            elif flag.owner == 2:
+                color = FLAG_COLOR_PLAYER_2
             else:
-                color = FLAG_COLOR_NEUTRAL  # Future: other player colors
+                color = FLAG_COLOR_NEUTRAL
 
             # Draw capture radius circle (semi-transparent)
             radius_surface = pygame.Surface(
@@ -98,23 +102,39 @@ class Renderer:
         # Draw map background
         self.screen.blit(self.map_image, (0, 0))
 
-        # Draw flags first (below player)
+        # Draw flags first (below players)
         self._draw_flags(game_state)
 
-        # Draw player
-        player = game_state.player
-        px, py = latlng_to_pixel(player.lat, player.lng)
-        pygame.draw.circle(self.screen, PLAYER_COLOR, (px, py), self.player_radius)
+        # Draw player 1 (blue)
+        p1 = game_state.player1
+        p1x, p1y = latlng_to_pixel(p1.lat, p1.lng)
+        pygame.draw.circle(self.screen, PLAYER_1_COLOR, (p1x, p1y), self.player_radius)
+        pygame.draw.circle(self.screen, (255, 255, 255), (p1x, p1y), self.player_radius, 2)
 
-        # Count captured flags
-        captured_count = sum(1 for f in game_state.flags if f.owner == player.team)
+        # Draw player 2 (red)
+        p2 = game_state.player2
+        p2x, p2y = latlng_to_pixel(p2.lat, p2.lng)
+        pygame.draw.circle(self.screen, PLAYER_2_COLOR, (p2x, p2y), self.player_radius)
+        pygame.draw.circle(self.screen, (255, 255, 255), (p2x, p2y), self.player_radius, 2)
+
+        # Count captured flags for each team
+        p1_flags = sum(1 for f in game_state.flags if f.owner == 1)
+        p2_flags = sum(1 for f in game_state.flags if f.owner == 2)
         total_flags = len(game_state.flags)
 
-        # Draw debug info
-        debug_text = f"Lat: {player.lat:.5f}  Lng: {player.lng:.5f}  Flags: {captured_count}/{total_flags}"
-        if player.is_capturing and player.capture_target:
-            progress_pct = int(player.capture_target.capture_progress * 100)
-            debug_text += f"  Capturing: {progress_pct}%"
+        # Build score display
+        score_text = f"Blue: {p1_flags}  Red: {p2_flags}  (of {total_flags})"
+
+        # Show capture progress if either player is capturing
+        capture_info = ""
+        if p1.is_capturing and p1.capture_target:
+            progress_pct = int(p1.capture_target.capture_progress * 100)
+            capture_info += f"  [Blue capturing: {progress_pct}%]"
+        if p2.is_capturing and p2.capture_target:
+            progress_pct = int(p2.capture_target.capture_progress * 100)
+            capture_info += f"  [Red capturing: {progress_pct}%]"
+
+        debug_text = score_text + capture_info
 
         text_surface = self.font.render(debug_text, True, (255, 255, 255))
         # Draw with black background for readability

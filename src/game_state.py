@@ -77,11 +77,23 @@ class GameState:
     """Manages all game objects and logic."""
 
     def __init__(self):
-        # Start player at center of map
-        center_lat = (MAP_BOUNDS["min_lat"] + MAP_BOUNDS["max_lat"]) / 2
-        center_lng = (MAP_BOUNDS["min_lng"] + MAP_BOUNDS["max_lng"]) / 2
+        # Start players at opposite corners of map
+        lat_offset = (MAP_BOUNDS["max_lat"] - MAP_BOUNDS["min_lat"]) * 0.2
+        lng_offset = (MAP_BOUNDS["max_lng"] - MAP_BOUNDS["min_lng"]) * 0.2
 
-        self.player = Player(center_lat, center_lng, team=1)
+        # Player 1 (blue) starts bottom-left
+        p1_lat = MAP_BOUNDS["min_lat"] + lat_offset
+        p1_lng = MAP_BOUNDS["min_lng"] + lng_offset
+        self.player1 = Player(p1_lat, p1_lng, team=1)
+
+        # Player 2 (red) starts top-right
+        p2_lat = MAP_BOUNDS["max_lat"] - lat_offset
+        p2_lng = MAP_BOUNDS["max_lng"] - lng_offset
+        self.player2 = Player(p2_lat, p2_lng, team=2)
+
+        # Keep .player alias for backwards compatibility
+        self.player = self.player1
+
         self.flags: list[Flag] = []
         self._place_flags()
 
@@ -110,10 +122,8 @@ class GameState:
                     # Could not place all flags with spacing, use what we have
                     break
 
-    def _check_flag_captures(self, dt: float) -> None:
-        """Check if player is within capture radius of any flag and update capture progress."""
-        player = self.player
-
+    def _check_player_capture(self, player: Player, dt: float) -> None:
+        """Check if a player is within capture radius of any flag and update capture progress."""
         # Find the closest uncaptured or enemy flag in range
         closest_flag: Flag | None = None
         closest_distance = float("inf")
@@ -130,6 +140,14 @@ class GameState:
 
         # Handle capture logic
         if closest_flag is not None:
+            # Check if another player is already capturing this flag
+            if closest_flag.being_captured_by is not None and closest_flag.being_captured_by != player:
+                # Contested! Reset progress and neither can capture
+                closest_flag.reset_capture()
+                player.is_capturing = False
+                player.capture_target = None
+                return
+
             # Player is in range of a capturable flag
             if player.capture_target != closest_flag:
                 # Started capturing a new flag, reset progress
@@ -157,15 +175,24 @@ class GameState:
             player.is_capturing = False
             player.capture_target = None
 
-    def update(self, dt: float, directions: list[str]) -> None:
+    def _check_flag_captures(self, dt: float) -> None:
+        """Check flag captures for all players."""
+        self._check_player_capture(self.player1, dt)
+        self._check_player_capture(self.player2, dt)
+
+    def update(self, dt: float, p1_directions: list[str], p2_directions: list[str]) -> None:
         """
         Update game state.
 
         Args:
             dt: Delta time in seconds
-            directions: List of active directions ("north", "south", "east", "west")
+            p1_directions: List of active directions for player 1 (arrow keys)
+            p2_directions: List of active directions for player 2 (WASD)
         """
-        for direction in directions:
-            self.player.move(direction, dt)
+        for direction in p1_directions:
+            self.player1.move(direction, dt)
+
+        for direction in p2_directions:
+            self.player2.move(direction, dt)
 
         self._check_flag_captures(dt)
