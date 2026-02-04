@@ -4,7 +4,15 @@ Renderer - handles all pygame drawing.
 
 import pygame
 
-from src.config import MAP_IMAGE_PATH, MAP_SIZE_PIXELS, PLAYER_COLOR
+import math
+from src.config import (
+    MAP_IMAGE_PATH,
+    MAP_SIZE_PIXELS,
+    PLAYER_COLOR,
+    FLAG_COLOR_NEUTRAL,
+    FLAG_COLOR_PLAYER_1,
+    FLAG_CAPTURE_RADIUS_METERS,
+)
 from src.geo_utils import latlng_to_pixel
 from src.game_state import GameState
 
@@ -24,21 +32,90 @@ class Renderer:
         # Player settings
         self.player_radius = 8
 
+        # Flag settings
+        self.flag_radius = 12
+        # Approximate pixels per meter (based on map scale)
+        # Map is roughly 5km wide, so 5000m / 1925px ≈ 2.6m per pixel
+        self.meters_per_pixel = 5000 / MAP_SIZE_PIXELS[0]
+        self.capture_radius_pixels = int(FLAG_CAPTURE_RADIUS_METERS / self.meters_per_pixel)
+
         # Font for debug info
         self.font = pygame.font.Font(None, 24)
+
+    def _draw_flags(self, game_state: GameState) -> None:
+        """Draw all flags and their capture progress."""
+        for flag in game_state.flags:
+            fx, fy = latlng_to_pixel(flag.lat, flag.lng)
+
+            # Determine flag color based on owner
+            if flag.owner is None:
+                color = FLAG_COLOR_NEUTRAL
+            elif flag.owner == 1:
+                color = FLAG_COLOR_PLAYER_1
+            else:
+                color = FLAG_COLOR_NEUTRAL  # Future: other player colors
+
+            # Draw capture radius circle (semi-transparent)
+            radius_surface = pygame.Surface(
+                (self.capture_radius_pixels * 2, self.capture_radius_pixels * 2),
+                pygame.SRCALPHA
+            )
+            pygame.draw.circle(
+                radius_surface,
+                (*color, 40),  # Semi-transparent
+                (self.capture_radius_pixels, self.capture_radius_pixels),
+                self.capture_radius_pixels
+            )
+            self.screen.blit(
+                radius_surface,
+                (fx - self.capture_radius_pixels, fy - self.capture_radius_pixels)
+            )
+
+            # Draw the flag itself
+            pygame.draw.circle(self.screen, color, (fx, fy), self.flag_radius)
+            pygame.draw.circle(self.screen, (0, 0, 0), (fx, fy), self.flag_radius, 2)
+
+            # Draw capture progress arc if being captured
+            if flag.being_captured_by is not None and flag.capture_progress > 0:
+                self._draw_capture_progress(fx, fy, flag.capture_progress)
+
+    def _draw_capture_progress(self, x: int, y: int, progress: float) -> None:
+        """Draw a progress arc around the flag."""
+        arc_radius = self.flag_radius + 6
+        arc_width = 4
+        # Green progress arc
+        arc_color = (50, 200, 50)
+
+        # Draw arc from top (270 degrees in pygame) clockwise
+        start_angle = math.pi / 2  # Top
+        end_angle = start_angle - (progress * 2 * math.pi)
+
+        rect = pygame.Rect(x - arc_radius, y - arc_radius, arc_radius * 2, arc_radius * 2)
+        pygame.draw.arc(self.screen, arc_color, rect, end_angle, start_angle, arc_width)
 
     def draw(self, game_state: GameState) -> None:
         """Draw the current game state."""
         # Draw map background
         self.screen.blit(self.map_image, (0, 0))
 
+        # Draw flags first (below player)
+        self._draw_flags(game_state)
+
         # Draw player
         player = game_state.player
         px, py = latlng_to_pixel(player.lat, player.lng)
         pygame.draw.circle(self.screen, PLAYER_COLOR, (px, py), self.player_radius)
 
+        # Count captured flags
+        captured_count = sum(1 for f in game_state.flags if f.owner == player.team)
+        total_flags = len(game_state.flags)
+
         # Draw debug info
-        debug_text = f"Lat: {player.lat:.5f}  Lng: {player.lng:.5f}"
+        debug_text = f"Lat: {player.lat:.5f}  Lng: {player.lng:.5f}  Flags: {captured_count}/{total_flags}"
+        if player.is_capturing and player.capture_target:
+            progress_pct = int(player.capture_target.capture_progress * 100)
+            debug_text += f"  Capturing: {progress_pct}%"
+
         text_surface = self.font.render(debug_text, True, (255, 255, 255))
         # Draw with black background for readability
         text_bg = pygame.Surface((text_surface.get_width() + 10, text_surface.get_height() + 6))
